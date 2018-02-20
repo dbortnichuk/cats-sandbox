@@ -1,10 +1,16 @@
 package sandbox.printable
 
 
-import sandbox.models.Models.Cat
+import sandbox.models.Models.{Box, Cat}
 
 trait Printable[A] {
+  self =>
   def format(value: A): String
+  def contramap[B](func: B => A): Printable[B] =
+    new Printable[B] {
+      def format(value: B): String =
+        self.format(func(value))
+    }
 }
 
 object PrintableInstances {
@@ -17,6 +23,13 @@ object PrintableInstances {
     new Printable[Int] {
       def format(value: Int): String = value.toString
     }
+
+//  implicit def boxPrintable[A](implicit p: Printable[A]) =
+//    new Printable[Box[A]] {
+//      def format(box: Box[A]): String = p.format(box.value)
+//    }
+
+  implicit def boxPrintable[A](implicit p: Printable[A]) = p.contramap[Box[A]](_.value)
 
   implicit val printableCat: Printable[Cat] =
     new Printable[Cat] {

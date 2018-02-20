@@ -2,7 +2,7 @@ package sandbox
 
 import cats.syntax.show._
 import sandbox.ShowEx._
-import sandbox.models.Models.{Cat, Order}
+import sandbox.models.Models.{Box, Cat, Order}
 import sandbox.printable.Printable
 import sandbox.printable.PrintableInstances._
 import sandbox.printable.PrintableSyntax._
@@ -19,6 +19,8 @@ object Main extends App {
   val arny = Cat("Arny", 3, "Red")
   val sly = Cat("Sly", 3, "Blue")
   val bruce = Cat("Bruce", 2, "White")
+
+  val box = Box("present")
 
 
   Printable.print(arny)
@@ -48,5 +50,11 @@ object Main extends App {
   println("add options " + add(List(Some(1), None, Some(2), None, Some(3))))
 
   println("add orders " + add(List(Order(1, 2), Order(2, 2), Order(3, 1))))
+
+  val func1: Int => Double = (x: Int) => x.toDouble
+
+  val func2: Double => Double = (y: Double) => y * 2
+  box.print
+
 
 }
