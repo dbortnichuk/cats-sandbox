@@ -1,25 +1,13 @@
 package functor
 
 import cats.Functor
-import sandbox.models.Models.Box
+import sandbox.models.Models.{Box, Branch, Leaf, Tree}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 object TreeFunctor {
 
-  sealed trait Tree[+A]
 
-  object Tree {
-    def branch[A](left: Tree[A], right: Tree[A]): Tree[A] =
-      Branch(left, right)
-
-    def leaf[A](value: A): Tree[A] =
-      Leaf(value)
-  }
-
-  final case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
-
-  final case class Leaf[A](value: A) extends Tree[A]
 
   implicit class FunctorOps[F[_], A](src: F[A]) {
     def map[B](func: A => B)(implicit functor: Functor[F]): F[B] = functor.map(src)(func)
