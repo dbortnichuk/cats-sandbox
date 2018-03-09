@@ -6,6 +6,7 @@ import sandbox.models.Models.{Box, Cat}
 trait Printable[A] {
   self =>
   def format(value: A): String
+
   def contramap[B](func: B => A): Printable[B] =
     new Printable[B] {
       def format(value: B): String =
@@ -24,10 +25,10 @@ object PrintableInstances {
       def format(value: Int): String = value.toString
     }
 
-//  implicit def boxPrintable[A](implicit p: Printable[A]) =
-//    new Printable[Box[A]] {
-//      def format(box: Box[A]): String = p.format(box.value)
-//    }
+  //  implicit def boxPrintable[A](implicit p: Printable[A]) =
+  //    new Printable[Box[A]] {
+  //      def format(box: Box[A]): String = p.format(box.value)
+  //    }
 
   implicit def boxPrintable[A](implicit p: Printable[A]) = p.contramap[Box[A]](_.value)
 
@@ -43,16 +44,56 @@ object PrintableInstances {
 }
 
 object Printable {
-  def format[A](value: A)(implicit p: Printable[A]): String = p.format(value)
+  def format[A: Printable](value: A): String = implicitly[Printable[A]].format(value)
 
   def print[A](value: A)(implicit p: Printable[A]): Unit = println(format(value))
 
 }
 
 object PrintableSyntax {
-  implicit class PrintableOps[A](value: A) {
-    def format(implicit p: Printable[A]): String = p.format(value)
+
+  implicit class PrintableOps[A: Printable](value: A) {
+    def format: String = implicitly[Printable[A]].format(value)
+
     def print(implicit p: Printable[A]): Unit = println(p.format(value))
 
   }
+
+}
+
+//class Tst2() extends Tst {
+//
+//  def test(t: Tst) = t.x
+//
+//}
+//
+//class Tst1() extends Tst {
+//
+//  def test(t: Tst) = t.x
+//
+//}
+
+class Tst(a: Int, b: Int) {
+  def this(c: Int) {
+    this(c, 0)
+  }
+
+  def this() {
+    this(0)
+  }
+
+  private val x = 0
+
+  def other(o: Tst) = println(o.x)
+
+}
+
+object Tst {
+  def apply(a: Int, b: Int): Tst = {
+    val t = new Tst(a, b)
+    println(t.x)
+    t.other(new Tst())
+    t
+  }
+
 }

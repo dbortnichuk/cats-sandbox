@@ -22,6 +22,8 @@ object Main extends App {
 
   val box = Box("present")
 
+  //println("format".format)
+  println(bruce.format)
 
   Printable.print(arny)
 
